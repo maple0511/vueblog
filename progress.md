@@ -17,3 +17,4 @@
 - 后端测试通过；前端生产构建与 Vitest 通过。
 - 移除旧版 Vue 2/Spring Boot 2 源码树，避免遗留明文密码和双实现混淆；历史仍保留在 Git 中。
 - `mvn verify`、`npm run build`、`npm test` 和 `docker compose config` 均通过。
+- 提交 `e20c5e8` 已推送至 GitHub `refactor/campus-blog`，默认分支未修改。

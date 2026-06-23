@@ -1,1 +1,0 @@
-{"root":["./src/api.ts","./src/env.d.ts","./src/main.ts","./src/router.ts","./src/types.ts","./src/stores/auth.test.ts","./src/stores/auth.ts","./src/app.vue","./src/views/authview.vue","./src/views/editorview.vue","./src/views/homeview.vue","./src/views/postview.vue"],"version":"5.8.3"}
