@@ -4,6 +4,7 @@
 .idea/
 .vscode/
 backend/target/
+backend/app.jar
 frontend/node_modules/
 frontend/dist/
 frontend/*.tsbuildinfo

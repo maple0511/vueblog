@@ -19,3 +19,5 @@
 - `mvn verify`、`npm run build`、`npm test` 和 `docker compose config` 均通过。
 - 提交 `e20c5e8` 已推送至 GitHub `refactor/campus-blog`，默认分支未修改。
 - 远程检查确认 SSH 使用 2000；80/443/8080 已被既有服务占用，选择空闲端口 18000 部署。
+- 服务器端 Maven Central 速度过慢，增加 `Dockerfile.runtime` 与 Compose 覆盖文件，支持部署本地已通过测试的 JAR。
+- 后端镜像安装 `curl`，使 Actuator 健康检查在容器内可执行。
