@@ -38,11 +38,10 @@ flowchart TB
 
 ```mermaid
 flowchart LR
-  Internet -->|TCP 2000| FE[frontend container / Nginx]
+  Internet -->|TCP 18000| FE[frontend container / Nginx]
   FE -->|/api| BE[backend container :8080]
   BE --> DB[(mysql container :3306)]
   BE --> AI[AI Provider HTTPS]
 ```
 
-公网只暴露前端端口 `2000`。后端和数据库仅通过 Compose 内部网络通信。
-
+公网只暴露前端端口 `18000`。后端和数据库仅通过 Compose 内部网络通信。

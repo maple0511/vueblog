@@ -7,7 +7,7 @@
 - 克隆 `maple0511/vueblog`，创建 `refactor/campus-blog` 分支。
 - 初始化 Planning with Files 三份持久文件。
 - 创建 Spring Boot 3 后端、Flyway 数据库、JWT 安全、文章/标签/评论和 AI 接口初版。
-- 用户指定公网验收入口为 `1.94.218.30:2000`；认证凭据不写入仓库。
+- 用户提供服务器 `1.94.218.30` 与 SSH 端口 `2000`；认证凭据不写入仓库。
 - 确认所有提交使用 `refactor/campus-blog`，不修改默认主分支。
 - 本机 Docker daemon 未运行，后端验证切换为临时 Maven 运行时。
 - 后端首次编译发现 Java 21 虚拟线程 API，已改为 Java 17 兼容的固定线程池。
@@ -18,3 +18,4 @@
 - 移除旧版 Vue 2/Spring Boot 2 源码树，避免遗留明文密码和双实现混淆；历史仍保留在 Git 中。
 - `mvn verify`、`npm run build`、`npm test` 和 `docker compose config` 均通过。
 - 提交 `e20c5e8` 已推送至 GitHub `refactor/campus-blog`，默认分支未修改。
+- 远程检查确认 SSH 使用 2000；80/443/8080 已被既有服务占用，选择空闲端口 18000 部署。

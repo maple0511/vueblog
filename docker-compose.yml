@@ -45,11 +45,10 @@ services:
     build: ./frontend
     restart: unless-stopped
     ports:
-      - "${PUBLIC_PORT:-2000}:80"
+      - "${PUBLIC_PORT:-18000}:80"
     depends_on:
       backend:
         condition: service_healthy
 
 volumes:
   mysql_data:
-

@@ -37,7 +37,7 @@ docker compose up -d --build
 docker compose ps
 ```
 
-默认公网端口为 `2000`。不得提交 `.env`。
+默认公网端口为 `18000`。不得提交 `.env`。
 
 ## 验证
 
@@ -59,4 +59,3 @@ docker compose config
 ## 开源说明
 
 原始项目遵循仓库内的 MIT License。本重构保留上游历史和许可证，新增实现位于 `backend/`、`frontend/`、`docs/` 与根部署配置。
-
