@@ -1,0 +1,38 @@
+# CampusBlog AI 重构执行计划
+
+## 目标
+
+将原 VueBlog 重构为可通过 Docker Compose 部署的 AI 校园知识博客，完成认证、文章、标签、搜索、评论、AI 摘要/标签、AI 写作助手、单篇文章问答、测试与课程材料。
+
+## 阶段
+
+| 阶段 | 状态 | 验收标准 |
+|---|---|---|
+| 1. 仓库与规划初始化 | complete | 新分支及三份规划文件存在 |
+| 2. 后端与数据库 | complete | Spring Boot 构建通过，核心 API 与 AI 抽象完成 |
+| 3. Vue 3 前端 | complete | 构建通过，核心业务及 AI 交互可用 |
+| 4. 部署与自动化测试 | in_progress | Compose 配置有效，前后端测试通过 |
+| 5. 课程文档与验收 | in_progress | UML/需求/设计/数据库/测试材料齐全 |
+
+## 关键决策
+
+- 后端使用 Java 17、Spring Boot 3.5、MyBatis-Plus、Flyway、Spring Security。
+- 前端使用 Vue 3、TypeScript、Vite、Pinia、Vue Router、Element Plus。
+- AI 通过 OpenAI 兼容接口接入；未配置或失败时不阻止文章保存。
+- AI 写作与问答使用 POST + SSE，避免在 URL 中暴露令牌和输入。
+- 单篇问答不使用向量数据库，仅使用当前文章上下文。
+- 新代码位于 `backend/`、`frontend/`、`deploy/`、`docs/`；旧项目保留作重构对照。
+
+## 错误记录
+
+| 错误 | 尝试 | 处理 |
+|---|---:|---|
+| 本机 Docker daemon 未启动 | 1 | 改用临时 Maven/Node 完成本地构建，Compose 在远程服务器验证 |
+| Java 17 不支持虚拟线程执行器 | 1 | SSE 工作线程改为固定线程池，保持 Java 17 基线 |
+| MyBatis 广泛扫描误注册 AiProvider | 1 | 移除全包扫描，仅给真实 Mapper 添加 `@Mapper` |
+| 前端 TypeScript 未配置 `@` 路径且检查第三方声明失败 | 1 | 增加 paths/baseUrl，跳过第三方 `.d.ts`，CI 固定 Node 22 |
+| Vite 配置类型不识别 Vitest `test` 字段 | 1 | 使用 `vitest/config` 的 `defineConfig` |
+| `vue-tsc -b` 向源码目录生成 JS 副本 | 1 | `tsconfig.app.json` 启用 `noEmit` 并清理生成文件 |
+| 清理生成文件时重复了 `frontend/` 路径 | 1 | 在前端工作目录改用 `src/...` 路径 |
+| SSE 固定线程池阻止 Maven 测试进程退出 | 1 | 使用具名守护线程，保持容器和测试可停止 |
+| Maven verify 在仓库根目录执行 | 1 | 改在 `backend/` 执行 |

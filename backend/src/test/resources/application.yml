@@ -1,0 +1,19 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:campusblog;MODE=MySQL;DATABASE_TO_LOWER=TRUE;DB_CLOSE_DELAY=-1
+    username: sa
+    password:
+  flyway:
+    enabled: false
+  sql:
+    init:
+      mode: always
+
+app:
+  jwt:
+    secret: test-secret-key-that-is-at-least-32-characters
+  cors:
+    allowed-origins: http://localhost:5173
+  ai:
+    enabled: false
+

@@ -1,0 +1,38 @@
+{
+  "name": "campusblog-frontend",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vue-tsc -b && vite build",
+    "test": "vitest run",
+    "lint": "eslint ."
+  },
+  "dependencies": {
+    "@element-plus/icons-vue": "^2.3.2",
+    "axios": "^1.10.0",
+    "dompurify": "^3.2.6",
+    "element-plus": "^2.10.2",
+    "marked": "^16.0.0",
+    "pinia": "^3.0.3",
+    "vue": "^3.5.17",
+    "vue-router": "^4.5.1"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.29.0",
+    "@types/dompurify": "^3.0.5",
+    "@types/node": "^24.0.3",
+    "@vitejs/plugin-vue": "^6.0.0",
+    "@vue/test-utils": "^2.4.6",
+    "eslint": "^9.29.0",
+    "eslint-plugin-vue": "^10.2.0",
+    "jsdom": "^26.1.0",
+    "typescript": "~5.8.3",
+    "typescript-eslint": "^8.34.1",
+    "vite": "^7.0.0",
+    "vitest": "^3.2.4",
+    "vue-tsc": "^2.2.10"
+  }
+}
+

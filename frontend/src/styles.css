@@ -1,0 +1,89 @@
+:root {
+  font-family: "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+  color: #1d2925;
+  background: #f3f1e8;
+  font-synthesis: none;
+}
+* { box-sizing: border-box; }
+body { margin: 0; min-width: 320px; }
+a { color: inherit; text-decoration: none; }
+button, input, textarea { font: inherit; }
+.app-shell { min-height: 100dvh; display: grid; grid-template-rows: auto 1fr auto; }
+.site-header {
+  position: sticky; top: 0; z-index: 20; display: flex; align-items: center; justify-content: space-between;
+  min-height: 72px; padding: 0 5vw; background: rgba(243,241,232,.92); backdrop-filter: blur(16px);
+  border-bottom: 1px solid #d8d6cb;
+}
+.brand { display: flex; align-items: center; gap: 12px; }
+.brand-mark { display: grid; place-items: center; width: 42px; height: 42px; border-radius: 13px; color: white; background: #16634a; font-weight: 800; }
+.brand strong, .brand small { display: block; }
+.brand small { color: #728078; margin-top: 2px; }
+nav { display: flex; align-items: center; gap: 22px; }
+.nav-primary, .primary-button {
+  border: 0; border-radius: 999px; padding: 11px 18px; color: #fff; background: #16634a; cursor: pointer;
+  transition: transform .2s ease, background .2s ease;
+}
+.nav-primary:hover, .primary-button:hover { transform: translateY(-1px); background: #0f503b; }
+.text-button { border: 0; background: none; color: #56645d; cursor: pointer; }
+main { width: min(1200px, 92vw); margin: 0 auto; padding: 48px 0 80px; }
+footer { padding: 28px; text-align: center; color: #748078; border-top: 1px solid #d8d6cb; }
+.eyebrow { color: #b35f35; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }
+.hero { display: grid; grid-template-columns: 1.25fr .75fr; gap: 60px; align-items: end; padding: 44px 0 64px; }
+.hero h1 { margin: 8px 0 20px; max-width: 760px; font-size: clamp(44px, 7vw, 82px); line-height: .98; letter-spacing: -.055em; }
+.hero p { max-width: 56ch; color: #5e6c65; line-height: 1.85; font-size: 18px; }
+.hero-aside { border-left: 1px solid #b7bbb3; padding-left: 30px; }
+.hero-aside strong { display: block; font-size: 48px; color: #16634a; }
+.toolbar { display: grid; grid-template-columns: 1fr auto; gap: 16px; align-items: center; margin-bottom: 32px; }
+.tag-row { display: flex; gap: 9px; flex-wrap: wrap; margin: 12px 0; }
+.tag { border: 1px solid #cfd5ce; border-radius: 999px; padding: 5px 10px; background: #f9f8f2; color: #456156; cursor: pointer; }
+.tag.ai::before { content: "AI"; margin-right: 5px; font-size: 10px; color: #b35f35; font-weight: 800; }
+.post-list { border-top: 1px solid #b9beb7; }
+.post-item { display: grid; grid-template-columns: 140px 1fr auto; gap: 28px; padding: 30px 0; border-bottom: 1px solid #cdd0ca; }
+.post-date { color: #748078; font-variant-numeric: tabular-nums; }
+.post-item h2 { margin: 0 0 10px; font-size: clamp(24px, 3vw, 35px); letter-spacing: -.03em; }
+.post-item p { max-width: 68ch; line-height: 1.7; color: #5c6862; }
+.arrow { align-self: center; font-size: 30px; color: #16634a; }
+.empty-state, .loading-state { padding: 80px 20px; text-align: center; color: #6d7972; }
+.auth-grid { display: grid; grid-template-columns: 1fr 1fr; min-height: 620px; border: 1px solid #c8ccc5; background: #faf9f3; }
+.auth-story { padding: 64px; background: #173e32; color: #eef2e8; display: flex; flex-direction: column; justify-content: space-between; }
+.auth-story h1 { font-size: clamp(42px, 6vw, 70px); line-height: 1; letter-spacing: -.05em; }
+.auth-panel { padding: 64px; align-self: center; width: 100%; }
+.auth-panel h2 { font-size: 36px; margin: 0 0 30px; }
+.editor-layout { display: grid; grid-template-columns: minmax(0, 1fr) 360px; gap: 28px; }
+.surface { background: #faf9f3; border: 1px solid #cdd0ca; padding: 28px; }
+.editor-layout .el-form-item__label { color: #34443c; font-weight: 700; }
+.editor-textarea textarea { min-height: 520px !important; font-family: ui-monospace, monospace; line-height: 1.7; }
+.ai-panel { position: sticky; top: 100px; height: fit-content; background: #173e32; color: #f2f3ec; padding: 26px; }
+.ai-panel h2 { margin: 0; }
+.ai-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 20px 0; }
+.ai-actions button { padding: 11px; border: 1px solid #628074; background: transparent; color: white; cursor: pointer; }
+.ai-output { min-height: 180px; max-height: 360px; overflow: auto; white-space: pre-wrap; padding: 16px; background: #0f3027; line-height: 1.65; }
+.article-layout { display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 42px; }
+.article-header { border-bottom: 1px solid #bdc2bb; padding-bottom: 30px; margin-bottom: 36px; }
+.article-header h1 { font-size: clamp(38px, 6vw, 68px); line-height: 1.05; letter-spacing: -.05em; margin: 8px 0 20px; }
+.article-meta { color: #718078; }
+.markdown-body { font-size: 17px; line-height: 1.85; overflow-wrap: anywhere; }
+.markdown-body img { max-width: 100%; }
+.markdown-body pre { padding: 18px; overflow: auto; background: #18251f; color: #ecf0e9; }
+.ai-summary { margin: 24px 0; padding: 20px; border-left: 4px solid #b35f35; background: #f7eee6; line-height: 1.7; }
+.side-panel { position: sticky; top: 100px; height: fit-content; }
+.qa-log { min-height: 180px; max-height: 420px; overflow: auto; margin: 16px 0; }
+.qa-item { border-top: 1px solid #d1d5cf; padding: 14px 0; }
+.qa-item strong { color: #16634a; }
+.comment { padding: 18px 0; border-bottom: 1px solid #d2d5cf; }
+.comment header { display: flex; justify-content: space-between; color: #59675f; }
+@media (max-width: 850px) {
+  .site-header { align-items: flex-start; padding: 16px 4vw; }
+  nav { gap: 12px; flex-wrap: wrap; justify-content: flex-end; }
+  .brand small { display: none; }
+  .hero, .auth-grid, .editor-layout, .article-layout { grid-template-columns: 1fr; }
+  .hero-aside { border-left: 0; border-top: 1px solid #b7bbb3; padding: 24px 0 0; }
+  .post-item { grid-template-columns: 1fr auto; }
+  .post-date { grid-column: 1 / -1; }
+  .auth-story, .auth-panel { padding: 36px; }
+  .ai-panel, .side-panel { position: static; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior: auto !important; transition: none !important; }
+}
+

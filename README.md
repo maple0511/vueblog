@@ -1,37 +1,62 @@
-> **项目：vueblog**
->
-> **公众号：MarkerHub**
+# CampusBlog AI
 
-### 介绍
+CampusBlog AI 是基于开源项目 `maple0511/vueblog` 重构的校园知识博客。项目保留文章创作与阅读主线，并加入 AI 摘要、自动标签、写作助手和单篇文章问答。
 
-一个基于SpringBoot + Vue开发的前后端分离博客项目，带有超级详细开发文档和讲解视频。还未接触过vue开发，或者前后端分离的同学，学起来哈。别忘了给vueblog一个star！感谢
+## 功能
 
-### 技术栈：
+- 注册、登录、JWT 认证和 BCrypt 密码。
+- Markdown 文章 CRUD、搜索、标签和评论。
+- 发布后异步生成 AI 摘要与标签，失败时使用人工内容。
+- SSE 流式 AI 写作助手：大纲、续写、改写、标题建议。
+- 基于当前文章的问答，不使用联网搜索或全站 RAG。
+- AI 每日额度、超时、调用日志和敏感数据最小化。
 
-![](https://oscimg.oschina.net/oscnet/up-4626cb696c003e36c4515e77adc7632c6ed.png)
+## 本地开发
 
-### 项目效果：
+后端：
 
-![图片](https://image-1300566513.cos.ap-guangzhou.myqcloud.com/upload/images/20200613/b1c18a3fe33544578971c3a15d0d9425.png)
+```bash
+cd backend
+mvn spring-boot:run
+```
 
-![图片](https://image-1300566513.cos.ap-guangzhou.myqcloud.com/upload/images/20200613/5e291faeaef648af87b8b33483eef5bd.png)
+前端：
 
+```bash
+cd frontend
+npm install
+npm run dev
+```
 
-### 项目文档：
+## Docker 部署
 
-开发文档：https://juejin.im/post/5ecfca676fb9a04793456fb8
+```bash
+cp .env.example .env
+# 修改 .env 中的数据库密码、JWT_SECRET、PUBLIC_ORIGIN 和可选 AI 配置
+docker compose up -d --build
+docker compose ps
+```
 
-vue入门视频：https://www.bilibili.com/video/BV125411W73W/
+默认公网端口为 `2000`。不得提交 `.env`。
 
-**vueblog讲解视频：** https://www.bilibili.com/video/BV1PQ4y1P7hZ/
+## 验证
 
-关注我的B站，后续陆续还有
+```bash
+cd backend && mvn verify
+cd frontend && npm ci && npm run build && npm test
+docker compose config
+```
 
-* 前后端分离类百度搜索引擎项目
-* 即时聊天等项目
+## 文档
 
-等项目分享出来哈！
+- [需求摘要](docs/requirements.md)
+- [架构设计](docs/architecture.md)
+- [数据库设计](docs/database-design.md)
+- [测试报告](docs/test-report.md)
+- [答辩提纲](docs/presentation-outline.md)
+- [持续执行计划](task_plan.md)
 
-**更多项目请关注公众号：MarkerHub**
+## 开源说明
 
-![MarkerHub](https://camo.githubusercontent.com/061df651b4fcfec5d258dc2beb78f441b9360e42/68747470733a2f2f696d6167652d313330303536363531332e636f732e61702d6775616e677a686f752e6d7971636c6f75642e636f6d2f6d696e652f4d61726b65724875622e6a7067)
+原始项目遵循仓库内的 MIT License。本重构保留上游历史和许可证，新增实现位于 `backend/`、`frontend/`、`docs/` 与根部署配置。
+
