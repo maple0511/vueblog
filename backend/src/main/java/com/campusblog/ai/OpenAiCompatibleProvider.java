@@ -11,6 +11,7 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.List;
 import java.util.Map;
@@ -58,7 +59,8 @@ public class OpenAiCompatibleProvider implements AiProvider {
             HttpResponse<java.io.InputStream> response = client.send(request(body),
                     HttpResponse.BodyHandlers.ofInputStream());
             ensureSuccess(response.statusCode(), "");
-            try (BufferedReader reader = new BufferedReader(new java.io.InputStreamReader(response.body()))) {
+            try (BufferedReader reader = new BufferedReader(
+                    new java.io.InputStreamReader(response.body(), StandardCharsets.UTF_8))) {
                 String line;
                 while (!cancelled.getAsBoolean() && (line = reader.readLine()) != null) {
                     if (!line.startsWith("data:")) continue;
