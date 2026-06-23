@@ -12,10 +12,12 @@ import java.time.LocalDateTime;
 public class AiUsageService {
     private final AiRequestLogMapper logMapper;
     private final AiProperties properties;
+    private final AiProvider provider;
 
-    public AiUsageService(AiRequestLogMapper logMapper, AiProperties properties) {
+    public AiUsageService(AiRequestLogMapper logMapper, AiProperties properties, AiProvider provider) {
         this.logMapper = logMapper;
         this.properties = properties;
+        this.provider = provider;
     }
 
     public void assertWithinLimit(Long userId) {
@@ -33,7 +35,7 @@ public class AiUsageService {
         log.setUserId(userId);
         log.setPostId(postId);
         log.setFeature(feature);
-        log.setProvider("openai-compatible");
+        log.setProvider(provider.providerName());
         log.setModel(properties.getModel());
         log.setStatus(status);
         log.setLatencyMs(latency);
@@ -44,4 +46,3 @@ public class AiUsageService {
         logMapper.insert(log);
     }
 }
-

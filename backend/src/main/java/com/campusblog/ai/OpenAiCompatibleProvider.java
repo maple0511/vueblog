@@ -78,13 +78,14 @@ public class OpenAiCompatibleProvider implements AiProvider {
 
     @Override
     public String providerName() {
-        return "openai-compatible";
+        return "dashscope-compatible";
     }
 
     private Map<String, Object> requestBody(String systemPrompt, String userPrompt, boolean stream) {
         return Map.of(
                 "model", properties.getModel(),
                 "stream", stream,
+                "enable_thinking", properties.isEnableThinking(),
                 "temperature", 0.4,
                 "messages", List.of(
                         Map.of("role", "system", "content", systemPrompt),
@@ -93,12 +94,18 @@ public class OpenAiCompatibleProvider implements AiProvider {
 
     private HttpRequest request(String body) {
         return HttpRequest.newBuilder()
-                .uri(URI.create(properties.getBaseUrl().replaceAll("/$", "") + "/v1/chat/completions"))
+                .uri(chatCompletionsUri())
                 .timeout(Duration.ofSeconds(properties.getTimeoutSeconds()))
                 .header("Authorization", "Bearer " + properties.getApiKey())
                 .header("Content-Type", "application/json")
                 .POST(HttpRequest.BodyPublishers.ofString(body))
                 .build();
+    }
+
+    private URI chatCompletionsUri() {
+        String baseUrl = properties.getBaseUrl().replaceAll("/+$", "");
+        String suffix = baseUrl.endsWith("/v1") ? "/chat/completions" : "/v1/chat/completions";
+        return URI.create(baseUrl + suffix);
     }
 
     private void ensureEnabled() {
@@ -118,4 +125,3 @@ public class OpenAiCompatibleProvider implements AiProvider {
         return node.isMissingNode() ? null : node.asInt();
     }
 }
-

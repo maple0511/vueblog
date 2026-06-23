@@ -7,9 +7,10 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties(prefix = "app.ai")
 public class AiProperties {
     private boolean enabled;
-    private String baseUrl = "https://api.openai.com";
+    private String baseUrl = "https://ws-etymarnalsjn28ue.cn-beijing.maas.aliyuncs.com/compatible-mode/v1";
     private String apiKey = "";
-    private String model = "gpt-4o-mini";
+    private String model = "qwen3.7-plus";
+    private boolean enableThinking = true;
     private int timeoutSeconds = 60;
     private int dailyLimitPerUser = 50;
 
@@ -21,9 +22,10 @@ public class AiProperties {
     public void setApiKey(String apiKey) { this.apiKey = apiKey; }
     public String getModel() { return model; }
     public void setModel(String model) { this.model = model; }
+    public boolean isEnableThinking() { return enableThinking; }
+    public void setEnableThinking(boolean enableThinking) { this.enableThinking = enableThinking; }
     public int getTimeoutSeconds() { return timeoutSeconds; }
     public void setTimeoutSeconds(int timeoutSeconds) { this.timeoutSeconds = timeoutSeconds; }
     public int getDailyLimitPerUser() { return dailyLimitPerUser; }
     public void setDailyLimitPerUser(int dailyLimitPerUser) { this.dailyLimitPerUser = dailyLimitPerUser; }
 }
-

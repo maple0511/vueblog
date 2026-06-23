@@ -11,6 +11,8 @@ CampusBlog AI 是基于开源项目 `maple0511/vueblog` 重构的校园知识博
 - 基于当前文章的问答，不使用联网搜索或全站 RAG。
 - AI 每日额度、超时、调用日志和敏感数据最小化。
 
+默认 AI Provider 为阿里云百炼千问兼容接口，模型 `qwen3.7-plus`。支持深度思考模式，但前端只接收最终回答，不展示模型内部推理内容。
+
 ## 本地开发
 
 后端：
@@ -38,6 +40,16 @@ docker compose ps
 ```
 
 默认公网端口为 `18000`。不得提交 `.env`。
+
+启用千问：
+
+```text
+AI_ENABLED=true
+AI_BASE_URL=https://ws-etymarnalsjn28ue.cn-beijing.maas.aliyuncs.com/compatible-mode/v1
+AI_API_KEY=通过服务器环境变量提供
+AI_MODEL=qwen3.7-plus
+AI_ENABLE_THINKING=true
+```
 
 ## 验证
 

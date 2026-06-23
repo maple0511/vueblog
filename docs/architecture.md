@@ -13,7 +13,7 @@ flowchart LR
   U[校园创作者/读者] --> N[Nginx + Vue 3]
   N --> B[Spring Boot REST API]
   B --> M[(MySQL 8.4)]
-  B --> A[OpenAI 兼容模型服务]
+  B --> A[阿里云百炼千问兼容服务]
 ```
 
 ## 后端组件
@@ -24,7 +24,7 @@ flowchart TB
   S --> R[MyBatis-Plus Mapper]
   R --> DB[(MySQL)]
   S --> P[AiProvider]
-  P --> O[OpenAI Compatible API]
+  P --> O[DashScope OpenAI Compatible API]
   F[JWT Filter] --> C
   E[Global Exception Handler] --> C
 ```
@@ -41,7 +41,7 @@ flowchart LR
   Internet -->|TCP 18000| FE[frontend container / Nginx]
   FE -->|/api| BE[backend container :8080]
   BE --> DB[(mysql container :3306)]
-  BE --> AI[AI Provider HTTPS]
+  BE --> AI[千问 AI Provider HTTPS]
 ```
 
 公网只暴露前端端口 `18000`。后端和数据库仅通过 Compose 内部网络通信。

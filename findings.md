@@ -19,3 +19,9 @@
 - AI 功能包括摘要、标签、写作助手和当前文章问答。
 - 公网验收使用已有 Linux 服务器的 IP + 端口。
 
+## 千问兼容接口
+
+- AI 厂商确定为阿里云百炼千问，模型为 `qwen3.7-plus`。
+- 用户提供的 Base URL 已包含 `/compatible-mode/v1`，客户端不得再次重复追加 `/v1`。
+- `extra_body={"enable_thinking": true}` 在兼容 HTTP 请求中对应顶层字段 `enable_thinking`。
+- 流式响应可能包含 `reasoning_content`；产品只向前端发送最终 `content`，不暴露内部思考过程。

@@ -13,12 +13,14 @@
 | 3. Vue 3 前端 | complete | 构建通过，核心业务及 AI 交互可用 |
 | 4. 部署与自动化测试 | complete | Compose 配置有效，前后端测试与公网冒烟通过 |
 | 5. 课程文档与验收 | complete | UML/需求/设计/数据库/测试与答辩源材料齐全 |
+| 6. 千问 Provider 接入 | in_progress | 千问配置、请求体、流式解析测试通过并完成服务器密钥部署 |
 
 ## 关键决策
 
 - 后端使用 Java 17、Spring Boot 3.5、MyBatis-Plus、Flyway、Spring Security。
 - 前端使用 Vue 3、TypeScript、Vite、Pinia、Vue Router、Element Plus。
 - AI 通过 OpenAI 兼容接口接入；未配置或失败时不阻止文章保存。
+- 默认 AI 服务为阿里云百炼千问 `qwen3.7-plus`，启用深度思考但不向前端暴露推理内容。
 - AI 写作与问答使用 POST + SSE，避免在 URL 中暴露令牌和输入。
 - 单篇问答不使用向量数据库，仅使用当前文章上下文。
 - 新代码位于 `backend/`、`frontend/`、`deploy/`、`docs/`；旧项目保留作重构对照。
