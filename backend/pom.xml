@@ -45,6 +45,11 @@
             <version>${mybatis-plus.version}</version>
         </dependency>
         <dependency>
+            <groupId>com.baomidou</groupId>
+            <artifactId>mybatis-plus-jsqlparser</artifactId>
+            <version>${mybatis-plus.version}</version>
+        </dependency>
+        <dependency>
             <groupId>org.flywaydb</groupId>
             <artifactId>flyway-core</artifactId>
         </dependency>
@@ -110,6 +115,11 @@
                 <version>0.8.13</version>
                 <executions>
                     <execution>
+                        <configuration>
+                            <excludes>
+                                <exclude>net.sf.jsqlparser.*</exclude>
+                            </excludes>
+                        </configuration>
                         <goals><goal>prepare-agent</goal></goals>
                     </execution>
                     <execution>
@@ -122,4 +132,3 @@
         </plugins>
     </build>
 </project>
-

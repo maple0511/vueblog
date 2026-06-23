@@ -7,9 +7,13 @@ import com.campusblog.post.PostService;
 import com.campusblog.security.AuthUser;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.event.TransactionPhase;
+import org.springframework.transaction.event.TransactionalEventListener;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -28,32 +32,39 @@ public class AiMetadataService {
     private final PostMappers.PostMapper postMapper;
     private final PostService postService;
     private final AiUsageService usageService;
+    private final ApplicationEventPublisher eventPublisher;
 
     public AiMetadataService(AiProvider provider, ObjectMapper objectMapper,
                              PostMappers.PostMapper postMapper, PostService postService,
-                             AiUsageService usageService) {
+                             AiUsageService usageService, ApplicationEventPublisher eventPublisher) {
         this.provider = provider;
         this.objectMapper = objectMapper;
         this.postMapper = postMapper;
         this.postService = postService;
         this.usageService = usageService;
+        this.eventPublisher = eventPublisher;
     }
 
     public void requestRegeneration(Long postId, AuthUser user) {
         Post post = postService.requireOwned(postId, user.id());
         post.setAiMetadataStatus("PENDING");
         postMapper.updateById(post);
-        generateAsync(postId, user.id());
+        requestGeneration(postId, user.id());
+    }
+
+    public void requestGeneration(Long postId, Long userId) {
+        eventPublisher.publishEvent(new AiMetadataRequested(postId, userId));
     }
 
     @Async
-    @Transactional
-    public void generateAsync(Long postId, Long userId) {
-        Post post = postMapper.selectById(postId);
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT, fallbackExecution = true)
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void generateAsync(AiMetadataRequested request) {
+        Post post = postMapper.selectById(request.postId());
         if (post == null) return;
         long started = System.currentTimeMillis();
         try {
-            usageService.assertWithinLimit(userId);
+            usageService.assertWithinLimit(request.userId());
             AiProvider.AiResult result = provider.complete(SYSTEM_PROMPT,
                     "标题：" + post.getTitle() + "\n正文：\n" + post.getContent());
             Metadata metadata = parse(result.content());
@@ -62,13 +73,13 @@ public class AiMetadataService {
             post.setAiMetadataStatus("READY");
             post.setAiGeneratedAt(LocalDateTime.now());
             postMapper.updateById(post);
-            postService.replaceAiTags(postId, metadata.tags());
-            usageService.log(userId, postId, "METADATA", "SUCCESS",
+            postService.replaceAiTags(request.postId(), metadata.tags());
+            usageService.log(request.userId(), request.postId(), "METADATA", "SUCCESS",
                     System.currentTimeMillis() - started, result.promptTokens(), result.completionTokens(), null);
         } catch (Exception exception) {
             post.setAiMetadataStatus("FAILED");
             postMapper.updateById(post);
-            usageService.log(userId, postId, "METADATA", "FAILED",
+            usageService.log(request.userId(), request.postId(), "METADATA", "FAILED",
                     System.currentTimeMillis() - started, null, null, exception.getClass().getSimpleName());
         }
     }
@@ -91,4 +102,3 @@ public class AiMetadataService {
 
     private record Metadata(String summary, List<String> tags) {}
 }
-

@@ -73,7 +73,7 @@ public class PostService {
         apply(post, request, true);
         postMapper.insert(post);
         replaceTags(post.getId(), request.tags(), "MANUAL");
-        aiMetadataService.generateAsync(post.getId(), author.id());
+        aiMetadataService.requestGeneration(post.getId(), author.id());
         return view(post);
     }
 
@@ -85,7 +85,7 @@ public class PostService {
         postMapper.updateById(post);
         replaceTags(post.getId(), request.tags(), "MANUAL");
         if (contentChanged) {
-            aiMetadataService.generateAsync(post.getId(), author.id());
+            aiMetadataService.requestGeneration(post.getId(), author.id());
         }
         return view(post);
     }
@@ -188,4 +188,3 @@ public class PostService {
                 post.getCreatedAt(), post.getUpdatedAt());
     }
 }
-
