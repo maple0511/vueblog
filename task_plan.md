@@ -45,3 +45,4 @@
 | 事务提交前异步任务读取不到新文章，状态停留 PENDING | 1 | 改为事务提交后发布并消费 AI 元数据事件 |
 | 前端健康检查使用 localhost 时解析到未监听地址 | 1 | 固定使用 `127.0.0.1/healthz` |
 | 低内存服务器重新执行前端 Node 构建耗时异常 | 1 | 中止重复构建，由 Compose 覆盖健康检查并复用已验证镜像 |
+| SSE 完成后的异步二次派发被 Spring Security 拒绝 | 1 | 显式放行 ASYNC 和 ERROR dispatcher，原始 API 请求仍要求 JWT |

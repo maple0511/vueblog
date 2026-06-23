@@ -25,3 +25,4 @@
 - 用户提供的 Base URL 已包含 `/compatible-mode/v1`，客户端不得再次重复追加 `/v1`。
 - `extra_body={"enable_thinking": true}` 在兼容 HTTP 请求中对应顶层字段 `enable_thinking`。
 - 流式响应可能包含 `reasoning_content`；产品只向前端发送最终 `content`，不暴露内部思考过程。
+- Spring MVC `SseEmitter` 完成时会触发 ASYNC dispatcher；若安全链只认证初始 REQUEST，会在响应已提交后产生 403 并导致 Nginx 报上游提前关闭。
