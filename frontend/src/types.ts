@@ -1,5 +1,12 @@
 export interface ApiResponse<T> { code: number; message: string; data: T }
-export interface User { id: number; username: string; email: string }
+export interface User {
+  id: number
+  username: string
+  email: string
+  role: 'USER' | 'ADMIN'
+  status: 'ACTIVE' | 'DISABLED'
+  profileCompleted: boolean
+}
 export interface Tag { id: number; name: string; source: string }
 export interface Post {
   id: number
@@ -12,6 +19,8 @@ export interface Post {
   aiMetadataStatus: 'NONE' | 'PENDING' | 'READY' | 'FAILED'
   aiSummaryEdited: boolean
   aiGeneratedAt?: string
+  reviewStatus: 'APPROVED' | 'REJECTED' | 'HIDDEN'
+  reviewReason?: string
   tags: Tag[]
   createdAt: string
   updatedAt: string
@@ -30,4 +39,16 @@ export interface Comment {
   content: string
   createdAt: string
 }
-
+export interface PreferenceOptions {
+  options: string[]
+  selected: string[]
+}
+export interface AdminUser {
+  id: number
+  username: string
+  email: string
+  role: 'USER' | 'ADMIN'
+  status: 'ACTIVE' | 'DISABLED'
+  profileCompleted: boolean
+  createdAt: string
+}

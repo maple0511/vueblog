@@ -18,6 +18,10 @@ public class Post {
     private String aiMetadataStatus;
     private Boolean aiSummaryEdited;
     private LocalDateTime aiGeneratedAt;
+    private String reviewStatus;
+    private String reviewReason;
+    private Long reviewerId;
+    private LocalDateTime reviewedAt;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
@@ -39,9 +43,16 @@ public class Post {
     public void setAiSummaryEdited(Boolean aiSummaryEdited) { this.aiSummaryEdited = aiSummaryEdited; }
     public LocalDateTime getAiGeneratedAt() { return aiGeneratedAt; }
     public void setAiGeneratedAt(LocalDateTime aiGeneratedAt) { this.aiGeneratedAt = aiGeneratedAt; }
+    public String getReviewStatus() { return reviewStatus; }
+    public void setReviewStatus(String reviewStatus) { this.reviewStatus = reviewStatus; }
+    public String getReviewReason() { return reviewReason; }
+    public void setReviewReason(String reviewReason) { this.reviewReason = reviewReason; }
+    public Long getReviewerId() { return reviewerId; }
+    public void setReviewerId(Long reviewerId) { this.reviewerId = reviewerId; }
+    public LocalDateTime getReviewedAt() { return reviewedAt; }
+    public void setReviewedAt(LocalDateTime reviewedAt) { this.reviewedAt = reviewedAt; }
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
     public LocalDateTime getUpdatedAt() { return updatedAt; }
     public void setUpdatedAt(LocalDateTime updatedAt) { this.updatedAt = updatedAt; }
 }
-

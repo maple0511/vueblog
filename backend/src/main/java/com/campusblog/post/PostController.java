@@ -37,7 +37,7 @@ public class PostController {
 
     @GetMapping("/posts/{id}")
     ApiResponse<PostDtos.PostView> get(@PathVariable Long id) {
-        return ApiResponse.ok(postService.get(id));
+        return ApiResponse.ok(postService.get(id, SecurityUtils.optionalUser()));
     }
 
     @PostMapping("/posts")
@@ -65,7 +65,7 @@ public class PostController {
 
     @GetMapping("/posts/{id}/comments")
     ApiResponse<List<PostDtos.CommentView>> comments(@PathVariable Long id) {
-        return ApiResponse.ok(commentService.list(id));
+        return ApiResponse.ok(commentService.list(id, SecurityUtils.optionalUser()));
     }
 
     @PostMapping("/posts/{id}/comments")
@@ -92,4 +92,3 @@ public class PostController {
         return ResponseEntity.accepted().build();
     }
 }
-

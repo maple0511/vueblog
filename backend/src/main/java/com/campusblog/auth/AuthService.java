@@ -30,10 +30,14 @@ public class AuthService {
         if (count > 0) {
             throw new BusinessException(HttpStatus.CONFLICT, "用户名或邮箱已被使用");
         }
+        Long totalUsers = userMapper.selectCount(null);
         User user = new User();
         user.setUsername(request.username().trim());
         user.setEmail(request.email().trim().toLowerCase());
         user.setPasswordHash(passwordEncoder.encode(request.password()));
+        user.setRole(totalUsers == 0 ? "ADMIN" : "USER");
+        user.setStatus("ACTIVE");
+        user.setProfileCompleted(false);
         user.setCreatedAt(LocalDateTime.now());
         userMapper.insert(user);
         return createAuthView(user);
@@ -44,6 +48,9 @@ public class AuthService {
                 .eq(User::getUsername, request.account()).or().eq(User::getEmail, request.account()));
         if (user == null || !passwordEncoder.matches(request.password(), user.getPasswordHash())) {
             throw new BusinessException(HttpStatus.UNAUTHORIZED, "账号或密码错误");
+        }
+        if ("DISABLED".equals(user.getStatus())) {
+            throw new BusinessException(HttpStatus.FORBIDDEN, "账号已被管理员停用");
         }
         return createAuthView(user);
     }
@@ -57,11 +64,11 @@ public class AuthService {
     }
 
     private AuthDtos.AuthView createAuthView(User user) {
-        return new AuthDtos.AuthView(jwtService.create(user.getId(), user.getUsername()), view(user));
+        return new AuthDtos.AuthView(jwtService.create(user.getId(), user.getUsername(), user.getRole()), view(user));
     }
 
     private AuthDtos.UserView view(User user) {
-        return new AuthDtos.UserView(user.getId(), user.getUsername(), user.getEmail());
+        return new AuthDtos.UserView(user.getId(), user.getUsername(), user.getEmail(),
+                user.getRole(), user.getStatus(), Boolean.TRUE.equals(user.getProfileCompleted()));
     }
 }
-

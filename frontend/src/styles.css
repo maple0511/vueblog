@@ -29,6 +29,7 @@ main { width: min(1200px, 92vw); margin: 0 auto; padding: 48px 0 80px; }
 footer { padding: 28px; text-align: center; color: #748078; border-top: 1px solid #d8d6cb; }
 .eyebrow { color: #b35f35; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }
 .hero { display: grid; grid-template-columns: 1.25fr .75fr; gap: 60px; align-items: end; padding: 44px 0 64px; }
+.hero.compact { grid-template-columns: 1fr auto; align-items: center; padding-bottom: 36px; }
 .hero h1 { margin: 8px 0 20px; max-width: 760px; font-size: clamp(44px, 7vw, 82px); line-height: .98; letter-spacing: -.055em; }
 .hero p { max-width: 56ch; color: #5e6c65; line-height: 1.85; font-size: 18px; }
 .hero-aside { border-left: 1px solid #b7bbb3; padding-left: 30px; }
@@ -36,6 +37,8 @@ footer { padding: 28px; text-align: center; color: #748078; border-top: 1px soli
 .toolbar { display: grid; grid-template-columns: 1fr auto; gap: 16px; align-items: center; margin-bottom: 32px; }
 .tag-row { display: flex; gap: 9px; flex-wrap: wrap; margin: 12px 0; }
 .tag { border: 1px solid #cfd5ce; border-radius: 999px; padding: 5px 10px; background: #f9f8f2; color: #456156; cursor: pointer; }
+.tag.active { background: #16634a; color: #fff; border-color: #16634a; }
+.tag.mini { display: inline-block; margin: 2px; font-size: 12px; }
 .tag.ai::before { content: "AI"; margin-right: 5px; font-size: 10px; color: #b35f35; font-weight: 800; }
 .post-list { border-top: 1px solid #b9beb7; }
 .post-item { display: grid; grid-template-columns: 140px 1fr auto; gap: 28px; padding: 30px 0; border-bottom: 1px solid #cdd0ca; }
@@ -72,6 +75,14 @@ footer { padding: 28px; text-align: center; color: #748078; border-top: 1px soli
 .qa-item strong { color: #16634a; }
 .comment { padding: 18px 0; border-bottom: 1px solid #d2d5cf; }
 .comment header { display: flex; justify-content: space-between; color: #59675f; }
+.onboarding { max-width: 880px; margin: 0 auto; }
+.onboarding h1, .admin-page h1 { font-size: clamp(38px, 5vw, 64px); line-height: 1.02; letter-spacing: -.05em; margin: 10px 0 18px; }
+.onboarding p, .admin-page p { color: #5e6c65; line-height: 1.75; }
+.interest-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 14px; margin: 30px 0; }
+.interest-card { border: 1px solid #c9d0c8; border-radius: 18px; padding: 18px; background: #fffdf6; color: #274238; cursor: pointer; text-align: left; font-weight: 700; }
+.interest-card.active { background: #173e32; color: #fff; border-color: #173e32; }
+.admin-toolbar { grid-template-columns: minmax(240px, 1fr) 180px auto; margin: 20px 0; }
+.admin-table { width: 100%; margin-top: 12px; }
 @media (max-width: 850px) {
   .site-header { align-items: flex-start; padding: 16px 4vw; }
   nav { gap: 12px; flex-wrap: wrap; justify-content: flex-end; }
@@ -86,4 +97,3 @@ footer { padding: 28px; text-align: center; color: #748078; border-top: 1px soli
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; transition: none !important; }
 }
-

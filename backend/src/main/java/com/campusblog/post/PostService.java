@@ -37,6 +37,14 @@ public class PostService {
     }
 
     public PageResult<PostDtos.PostView> list(String keyword, String tag, long page, long size) {
+        return listInternal(keyword, tag, "APPROVED", page, size);
+    }
+
+    public PageResult<PostDtos.PostView> listForAdmin(String keyword, String reviewStatus, long page, long size) {
+        return listInternal(keyword, null, reviewStatus, page, size);
+    }
+
+    private PageResult<PostDtos.PostView> listInternal(String keyword, String tag, String reviewStatus, long page, long size) {
         Set<Long> taggedIds = null;
         if (StringUtils.hasText(tag)) {
             Tag tagEntity = tagMapper.selectOne(new LambdaQueryWrapper<Tag>().eq(Tag::getName, tag));
@@ -50,6 +58,9 @@ public class PostService {
             }
         }
         LambdaQueryWrapper<Post> query = new LambdaQueryWrapper<Post>().orderByDesc(Post::getCreatedAt);
+        if (StringUtils.hasText(reviewStatus)) {
+            query.eq(Post::getReviewStatus, reviewStatus);
+        }
         if (StringUtils.hasText(keyword)) {
             query.and(wrapper -> wrapper.like(Post::getTitle, keyword).or().like(Post::getContent, keyword));
         }
@@ -61,8 +72,18 @@ public class PostService {
                 result.getCurrent(), result.getSize(), result.getTotal(), result.getPages());
     }
 
-    public PostDtos.PostView get(Long id) {
-        return view(requirePost(id));
+    public PostDtos.PostView get(Long id, AuthUser viewer) {
+        Post post = requirePost(id);
+        boolean canView = "APPROVED".equals(post.getReviewStatus())
+                || (viewer != null && (viewer.isAdmin() || post.getAuthorId().equals(viewer.id())));
+        if (!canView) {
+            throw new BusinessException(HttpStatus.NOT_FOUND, "文章不存在或未通过审核");
+        }
+        return view(post);
+    }
+
+    public void ensureViewable(Long id, AuthUser viewer) {
+        get(id, viewer);
     }
 
     @Transactional
@@ -70,6 +91,7 @@ public class PostService {
         Post post = new Post();
         post.setAuthorId(author.id());
         post.setCreatedAt(LocalDateTime.now());
+        post.setReviewStatus("APPROVED");
         apply(post, request, true);
         postMapper.insert(post);
         replaceTags(post.getId(), request.tags(), "MANUAL");
@@ -122,6 +144,45 @@ public class PostService {
     public List<PostDtos.TagView> allTags() {
         return tagMapper.selectList(new LambdaQueryWrapper<Tag>().orderByAsc(Tag::getName))
                 .stream().map(tag -> new PostDtos.TagView(tag.getId(), tag.getName(), "AVAILABLE")).toList();
+    }
+
+    public PageResult<PostDtos.PostView> recommend(List<String> preferredTags, long page, long size) {
+        List<String> normalized = preferredTags == null ? List.of() : preferredTags.stream()
+                .filter(StringUtils::hasText).map(String::trim).distinct().limit(10).toList();
+        if (normalized.isEmpty()) {
+            return list(null, null, page, size);
+        }
+        List<Long> tagIds = tagMapper.selectList(new LambdaQueryWrapper<Tag>().in(Tag::getName, normalized))
+                .stream().map(Tag::getId).toList();
+        if (tagIds.isEmpty()) {
+            return list(null, null, page, size);
+        }
+        Set<Long> postIds = new HashSet<>(postTagMapper.selectList(new LambdaQueryWrapper<PostTag>()
+                .in(PostTag::getTagId, tagIds)).stream().map(PostTag::getPostId).toList());
+        if (postIds.isEmpty()) {
+            return new PageResult<>(List.of(), page, Math.min(size, 50), 0, 0);
+        }
+        IPage<Post> result = postMapper.selectPage(Page.of(page, Math.min(size, 50)),
+                new LambdaQueryWrapper<Post>()
+                        .eq(Post::getReviewStatus, "APPROVED")
+                        .in(Post::getId, postIds)
+                        .orderByDesc(Post::getCreatedAt));
+        return new PageResult<>(result.getRecords().stream().map(this::view).toList(),
+                result.getCurrent(), result.getSize(), result.getTotal(), result.getPages());
+    }
+
+    @Transactional
+    public PostDtos.PostView review(Long id, String reviewStatus, String reason, AuthUser reviewer) {
+        if (!List.of("APPROVED", "REJECTED", "HIDDEN").contains(reviewStatus)) {
+            throw new BusinessException(HttpStatus.BAD_REQUEST, "审核状态不合法");
+        }
+        Post post = requirePost(id);
+        post.setReviewStatus(reviewStatus);
+        post.setReviewReason(reason == null ? "" : reason.trim());
+        post.setReviewerId(reviewer.id());
+        post.setReviewedAt(LocalDateTime.now());
+        postMapper.updateById(post);
+        return view(post);
     }
 
     @Transactional
@@ -184,7 +245,8 @@ public class PostService {
         return new PostDtos.PostView(post.getId(), post.getAuthorId(),
                 author == null ? "未知用户" : author.getUsername(), post.getTitle(), displaySummary,
                 post.getContent(), post.getAiSummary(), post.getAiMetadataStatus(),
-                Boolean.TRUE.equals(post.getAiSummaryEdited()), post.getAiGeneratedAt(), tags(post.getId()),
+                Boolean.TRUE.equals(post.getAiSummaryEdited()), post.getAiGeneratedAt(),
+                post.getReviewStatus(), post.getReviewReason(), tags(post.getId()),
                 post.getCreatedAt(), post.getUpdatedAt());
     }
 }

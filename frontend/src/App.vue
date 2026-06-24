@@ -19,7 +19,9 @@ function logout() {
       </router-link>
       <nav>
         <router-link to="/">探索文章</router-link>
+        <router-link v-if="auth.loggedIn" to="/recommendations">我的推荐</router-link>
         <router-link v-if="auth.loggedIn" to="/posts/new">开始创作</router-link>
+        <router-link v-if="auth.isAdmin" to="/admin">管理后台</router-link>
         <button v-if="auth.loggedIn" class="text-button" @click="logout">退出</button>
         <router-link v-else class="nav-primary" to="/auth">登录 / 注册</router-link>
       </nav>
@@ -28,4 +30,3 @@ function logout() {
     <footer>CampusBlog AI · 让校园知识被更好地创作、理解与传递</footer>
   </div>
 </template>
-

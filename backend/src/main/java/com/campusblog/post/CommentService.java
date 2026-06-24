@@ -24,8 +24,8 @@ public class CommentService {
         this.postService = postService;
     }
 
-    public List<PostDtos.CommentView> list(Long postId) {
-        postService.requirePost(postId);
+    public List<PostDtos.CommentView> list(Long postId, AuthUser viewer) {
+        postService.ensureViewable(postId, viewer);
         return commentMapper.selectList(new LambdaQueryWrapper<Comment>()
                         .eq(Comment::getPostId, postId).orderByAsc(Comment::getCreatedAt))
                 .stream().map(this::view).toList();
@@ -33,7 +33,7 @@ public class CommentService {
 
     @Transactional
     public PostDtos.CommentView create(Long postId, PostDtos.CommentRequest request, AuthUser author) {
-        postService.requirePost(postId);
+        postService.ensureViewable(postId, author);
         Comment comment = new Comment();
         comment.setPostId(postId);
         comment.setAuthorId(author.id());
@@ -60,4 +60,3 @@ public class CommentService {
                 author == null ? "未知用户" : author.getUsername(), comment.getContent(), comment.getCreatedAt());
     }
 }
-
