@@ -47,7 +47,7 @@ watch(selectedTag, load)
   </section>
   <div class="tag-row">
     <button class="tag" :class="{ active: !selectedTag }" @click="selectedTag = ''">全部</button>
-    <button v-for="tag in tags" :key="tag.id" class="tag" @click="selectedTag = tag.name">{{ tag.name }}</button>
+    <button v-for="tag in tags" :key="tag.id" class="tag" :class="{ active: selectedTag === tag.name }" @click="selectedTag = tag.name">{{ tag.name }}</button>
   </div>
   <div v-if="loading" class="loading-state">正在整理校园知识…</div>
   <div v-else-if="!posts.length" class="empty-state">暂时没有匹配的文章。登录后发布第一篇吧。</div>
@@ -65,4 +65,3 @@ watch(selectedTag, load)
     </router-link>
   </div>
 </template>
-

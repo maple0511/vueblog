@@ -16,5 +16,12 @@ public final class SecurityUtils {
         }
         return user;
     }
-}
 
+    public static AuthUser optionalUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !(authentication.getPrincipal() instanceof AuthUser user)) {
+            return null;
+        }
+        return user;
+    }
+}

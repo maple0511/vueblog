@@ -15,7 +15,12 @@ async function submit() {
   loading.value = true
   try {
     if (mode.value === 'login') await auth.login(form.account, form.password)
-    else await auth.register(form.username, form.email, form.password)
+    else {
+      await auth.register(form.username, form.email, form.password)
+      ElMessage.success('欢迎进入 CampusBlog')
+      router.push('/onboarding')
+      return
+    }
     ElMessage.success('欢迎进入 CampusBlog')
     router.push(String(route.query.redirect || '/'))
   } finally {
@@ -56,4 +61,3 @@ async function submit() {
     </div>
   </section>
 </template>
-

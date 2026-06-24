@@ -1,5 +1,7 @@
 package com.campusblog.security;
 
-public record AuthUser(Long id, String username) {
+public record AuthUser(Long id, String username, String role) {
+    public boolean isAdmin() {
+        return "ADMIN".equals(role);
+    }
 }
-

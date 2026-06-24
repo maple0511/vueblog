@@ -3,3 +3,7 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile.runtime
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.runtime

@@ -7,6 +7,7 @@ export const useAuthStore = defineStore('auth', () => {
   const user = ref<User | null>(JSON.parse(sessionStorage.getItem('campusblog-user') || 'null'))
   const token = ref(sessionStorage.getItem('campusblog-token') || '')
   const loggedIn = computed(() => Boolean(token.value && user.value))
+  const isAdmin = computed(() => user.value?.role === 'ADMIN')
 
   function save(auth: { token: string; user: User }) {
     token.value = auth.token
@@ -27,6 +28,13 @@ export const useAuthStore = defineStore('auth', () => {
     save(data.data)
   }
 
+  async function refreshMe() {
+    if (!token.value) return
+    const { data } = await api.get<ApiResponse<User>>('/api/auth/me')
+    user.value = data.data
+    sessionStorage.setItem('campusblog-user', JSON.stringify(data.data))
+  }
+
   function logout() {
     token.value = ''
     user.value = null
@@ -34,6 +42,5 @@ export const useAuthStore = defineStore('auth', () => {
     sessionStorage.removeItem('campusblog-user')
   }
 
-  return { user, token, loggedIn, login, register, logout }
+  return { user, token, loggedIn, isAdmin, login, register, refreshMe, logout }
 })
-
