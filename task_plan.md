@@ -44,6 +44,7 @@
 | SSH 默认 22 端口被远程关闭 | 1 | 将用户提供的 2000 解释为 SSH 端口并改用 `ssh -p 2000` |
 | 本机 Maven 命令不在 PATH | 1 | 使用 Homebrew 安装 Maven 本体，并显式设置 JDK 17 后验证 |
 | Homebrew Maven 安装卡在 OpenJDK 依赖下载 | 1 | 本机已有 JDK 17，改用 `brew install maven --ignore-dependencies` 安装 Maven 本体 |
+| 公网冒烟脚本将首页 HTML 当 JSON 解析 | 1 | 将首页检查改为只验证 HTTP 200，其余 API 继续解析 JSON |
 | 服务器完整 Git clone 长时间停滞 | 1 | 中止后改用部署所需的 `--depth 1` 单分支快照 |
 | 服务器 Maven Central 下载依赖长时间停滞 | 1 | 增加预构建 JAR 的运行时镜像模式，由本地验证后上传 |
 | 公网验收时分页总数为 0 且关键词条件未生效 | 1 | 注册 MyBatis-Plus 分页拦截器并增加搜索回归测试 |
