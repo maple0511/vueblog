@@ -1,0 +1,190 @@
+{
+  "base": "http://1.94.218.30:18000",
+  "startedAt": "2026-06-25 09:44:03 CST",
+  "testUser": "bb1782351843",
+  "postId": 11,
+  "finishedAt": "2026-06-25 09:45:04 CST",
+  "checks": [
+    {
+      "name": "B01 首页可访问",
+      "ok": true,
+      "detail": {
+        "status": 200
+      }
+    },
+    {
+      "name": "B02 用户注册成功",
+      "ok": true,
+      "detail": {
+        "status": 201
+      }
+    },
+    {
+      "name": "B03 重复注册被拒绝",
+      "ok": true,
+      "detail": {
+        "status": 409,
+        "message": "用户名或邮箱已被使用"
+      }
+    },
+    {
+      "name": "B04 错误密码登录失败",
+      "ok": true,
+      "detail": {
+        "status": 401
+      }
+    },
+    {
+      "name": "B05 当前用户信息可获取",
+      "ok": true,
+      "detail": {
+        "status": 200
+      }
+    },
+    {
+      "name": "B06 未登录发布文章被拒绝",
+      "ok": true,
+      "detail": {
+        "status": 401
+      }
+    },
+    {
+      "name": "B07 兴趣标签保存成功",
+      "ok": true,
+      "detail": {
+        "status": 200
+      }
+    },
+    {
+      "name": "B08 文章发布成功",
+      "ok": true,
+      "detail": {
+        "status": 201
+      }
+    },
+    {
+      "name": "B09 关键词搜索命中",
+      "ok": true,
+      "detail": {
+        "status": 200,
+        "total": 1
+      }
+    },
+    {
+      "name": "B10 标签筛选可用",
+      "ok": true,
+      "detail": {
+        "status": 200
+      }
+    },
+    {
+      "name": "B11 推荐页包含兴趣匹配文章",
+      "ok": true,
+      "detail": {
+        "status": 200
+      }
+    },
+    {
+      "name": "B12 评论发布成功",
+      "ok": true,
+      "detail": {
+        "status": 201
+      }
+    },
+    {
+      "name": "B13 评论列表可见",
+      "ok": true,
+      "detail": {
+        "status": 200
+      }
+    },
+    {
+      "name": "B14 指定管理员可登录",
+      "ok": true,
+      "detail": {
+        "status": 200
+      }
+    },
+    {
+      "name": "B15 管理员帖子列表可查",
+      "ok": true,
+      "detail": {
+        "status": 200
+      }
+    },
+    {
+      "name": "B16 管理员可隐藏帖子",
+      "ok": true,
+      "detail": {
+        "status": 200
+      }
+    },
+    {
+      "name": "B17 隐藏帖子不出现在公开列表",
+      "ok": true,
+      "detail": {
+        "status": 200,
+        "total": 0
+      }
+    },
+    {
+      "name": "B18 管理员可恢复帖子",
+      "ok": true,
+      "detail": {
+        "status": 200
+      }
+    },
+    {
+      "name": "B19 作者可触发 AI 元数据重生成",
+      "ok": true,
+      "detail": {
+        "status": 202
+      }
+    },
+    {
+      "name": "B20 AI 元数据最终完成",
+      "ok": true,
+      "detail": {
+        "status": "READY",
+        "summaryLength": 127
+      }
+    },
+    {
+      "name": "B21 AI 写作助手 SSE 返回内容",
+      "ok": true,
+      "detail": {
+        "length": 63,
+        "events": [
+          "chunk",
+          "chunk",
+          "chunk",
+          "chunk",
+          "chunk",
+          "chunk",
+          "chunk",
+          "chunk",
+          "chunk",
+          "chunk",
+          "chunk",
+          "chunk",
+          "done"
+        ]
+      }
+    },
+    {
+      "name": "B22 文章问答缺少依据时拒绝推测",
+      "ok": true,
+      "detail": {
+        "answer": "该文章未提供相关信息。",
+        "events": [
+          "chunk",
+          "chunk",
+          "done"
+        ]
+      }
+    }
+  ],
+  "aiMetadataStatus": "READY",
+  "writingSample": "1.二食堂新增夜宵窗口及期末复习错题整理建议2.校园资讯：二食堂夜宵窗口开放与期末复习3.二食堂夜宵营业与期末复习错题整理策略",
+  "qaSample": "该文章未提供相关信息。"
+}

@@ -1,0 +1,133 @@
+{
+  "generatedAt": "2026-06-25 09:45:29 CST",
+  "backendCommand": "cd backend && JAVA_HOME=$(/usr/libexec/java_home -v 17) /opt/homebrew/bin/mvn verify",
+  "frontendCommands": [
+    "cd frontend && npm test",
+    "cd frontend && npm run build"
+  ],
+  "composeCommand": "docker compose -f docker-compose.yml -f docker-compose.runtime.yml config",
+  "backendSurefire": [
+    {
+      "name": "com.campusblog.AuthFlowTest",
+      "tests": 4,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "timeSeconds": 0.37
+    },
+    {
+      "name": "com.campusblog.PostFlowTest",
+      "tests": 6,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "timeSeconds": 5.051
+    },
+    {
+      "name": "com.campusblog.ai.OpenAiCompatibleProviderTest",
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "timeSeconds": 0.59
+    }
+  ],
+  "backendTotalTests": 12,
+  "backendTotalFailures": 0,
+  "backendTotalErrors": 0,
+  "backendCoverage": {
+    "instruction": {
+      "covered": 2905,
+      "missed": 1015,
+      "total": 3920,
+      "percent": 74.11
+    },
+    "branch": {
+      "covered": 75,
+      "missed": 91,
+      "total": 166,
+      "percent": 45.18
+    },
+    "line": {
+      "covered": 587,
+      "missed": 167,
+      "total": 754,
+      "percent": 77.85
+    },
+    "method": {
+      "covered": 244,
+      "missed": 46,
+      "total": 290,
+      "percent": 84.14
+    },
+    "complexity": {
+      "covered": 258,
+      "missed": 116,
+      "total": 374,
+      "percent": 68.98
+    }
+  },
+  "backendPackageLineCoverage": {
+    "com.campusblog.config": {
+      "lineCovered": 6,
+      "lineTotal": 6,
+      "linePercent": 100.0
+    },
+    "com.campusblog.ai": {
+      "lineCovered": 169,
+      "lineTotal": 256,
+      "linePercent": 66.02
+    },
+    "com.campusblog": {
+      "lineCovered": 1,
+      "lineTotal": 3,
+      "linePercent": 33.33
+    },
+    "com.campusblog.admin": {
+      "lineCovered": 20,
+      "lineTotal": 40,
+      "linePercent": 50.0
+    },
+    "com.campusblog.common": {
+      "lineCovered": 16,
+      "lineTotal": 20,
+      "linePercent": 80.0
+    },
+    "com.campusblog.post": {
+      "lineCovered": 206,
+      "lineTotal": 252,
+      "linePercent": 81.75
+    },
+    "com.campusblog.security": {
+      "lineCovered": 65,
+      "lineTotal": 71,
+      "linePercent": 91.55
+    },
+    "com.campusblog.auth": {
+      "lineCovered": 104,
+      "lineTotal": 106,
+      "linePercent": 98.11
+    }
+  },
+  "frontendVitest": {
+    "testFiles": 2,
+    "tests": 3,
+    "failures": 0,
+    "source": "npm test output 2026-06-25 09:41 CST"
+  },
+  "frontendBuild": {
+    "status": "passed",
+    "source": "npm run build output 2026-06-25 09:41 CST"
+  },
+  "composeConfig": {
+    "status": "passed",
+    "source": "compose-runtime-config-ok 2026-06-25 09:41 CST"
+  },
+  "whiteBoxFocus": [
+    "AuthService unique user, disabled login, JWT user view",
+    "PostService search, visibility filter, ownership, validation, review, recommendations",
+    "CommentService create/delete authorization paths",
+    "AiUsageService quota guard and AiProvider DashScope stream parsing",
+    "Frontend streamPost chunk/error SSE parsing and auth store logout state"
+  ]
+}

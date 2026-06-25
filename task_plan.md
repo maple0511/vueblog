@@ -15,6 +15,7 @@
 | 5. 课程文档与验收 | complete | UML/需求/设计/数据库/测试与答辩源材料齐全 |
 | 6. 千问 Provider 接入 | complete | 千问配置、请求体、流式解析测试及真实公网调用全部通过 |
 | 7. 管理员审核与个性化推荐 | complete | 管理员可审核帖子/管理成员，新用户注册后可选择兴趣标签并获得推荐文章 |
+| 8. 完整黑盒/白盒测试与报告 | complete | 自动化测试、公网黑盒测试、覆盖率证据和 Markdown/DOCX 测试报告齐全 |
 
 ## 关键决策
 
@@ -45,6 +46,7 @@
 | 本机 Maven 命令不在 PATH | 1 | 使用 Homebrew 安装 Maven 本体，并显式设置 JDK 17 后验证 |
 | Homebrew Maven 安装卡在 OpenJDK 依赖下载 | 1 | 本机已有 JDK 17，改用 `brew install maven --ignore-dependencies` 安装 Maven 本体 |
 | 公网冒烟脚本将首页 HTML 当 JSON 解析 | 1 | 将首页检查改为只验证 HTTP 200，其余 API 继续解析 JSON |
+| minimax-docx OpenXML 环境缺少 .NET SDK | 1 | 尝试 `setup.sh --minimal` 时下载无进展，中止后用 `python-docx` 生成 DOCX，并用 unzip/python-docx 验证可打开 |
 | 服务器完整 Git clone 长时间停滞 | 1 | 中止后改用部署所需的 `--depth 1` 单分支快照 |
 | 服务器 Maven Central 下载依赖长时间停滞 | 1 | 增加预构建 JAR 的运行时镜像模式，由本地验证后上传 |
 | 公网验收时分页总数为 0 且关键词条件未生效 | 1 | 注册 MyBatis-Plus 分页拦截器并增加搜索回归测试 |
