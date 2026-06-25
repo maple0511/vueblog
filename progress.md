@@ -68,3 +68,7 @@
 - 公网黑盒测试 22 项全部通过，包含真实 AI 元数据、AI 写作 SSE 和文章问答拒绝推测；证据保存到 `docs/test-evidence/blackbox-2026-06-25.json`。
 - 白盒覆盖率和测试结果证据保存到 `docs/test-evidence/whitebox-2026-06-25.json`。
 - `docs/test-report.md` 已扩写为正式测试报告；`docs/CampusBlog-AI-软件测试报告.docx` 已生成并通过基本可打开校验。
+- 开始第 9 阶段：前端 UI 视觉优化，目标是在不改 API 与业务逻辑的前提下提高演示质感。
+- 已将全局样式重构为 CampusBlog 视觉系统：渐变网格背景、玻璃拟态导航、品牌标识、卡片阴影、悬浮动效、焦点态、响应式规则和低动画偏好适配。
+- 已增强首页 Hero、文章列表、标签筛选、认证页、Markdown 编辑器、AI 写作助手、文章详情、问答区、兴趣选择页和管理员后台的 CSS 表现。
+- 前端验证通过：`npm test` 共 2 个测试文件、3 个测试通过；`npm run build` 生产构建通过。
