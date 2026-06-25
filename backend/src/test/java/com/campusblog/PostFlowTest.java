@@ -2,6 +2,8 @@ package com.campusblog;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.campusblog.ai.AiRequestLog;
+import com.campusblog.ai.AiRequestLogMapper;
 import com.campusblog.auth.User;
 import com.campusblog.auth.UserMapper;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -13,7 +15,10 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Map;
+import java.time.LocalDateTime;
+import java.util.stream.IntStream;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -26,6 +31,7 @@ class PostFlowTest {
     @Autowired MockMvc mockMvc;
     @Autowired ObjectMapper objectMapper;
     @Autowired UserMapper userMapper;
+    @Autowired AiRequestLogMapper aiRequestLogMapper;
 
     @Test
     void createSearchAndAiFailureFallback() throws Exception {
@@ -97,6 +103,111 @@ class PostFlowTest {
         mockMvc.perform(get("/api/admin/users").header("Authorization", "Bearer " + adminToken))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.total").isNumber());
+    }
+
+    @Test
+    void rejectsAnonymousAndCrossOwnerPostOperations() throws Exception {
+        String authorToken = register("author" + System.nanoTime(), "author" + System.nanoTime() + "@example.com");
+        String otherToken = register("other" + System.nanoTime(), "other" + System.nanoTime() + "@example.com");
+        long postId = createPost(authorToken, "越权测试文章", "摘要", "# 正文\n作者内容。", "学习");
+
+        mockMvc.perform(post("/api/posts")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(Map.of(
+                                "title", "匿名文章", "content", "匿名正文", "tags", new String[]{"学习"}))))
+                .andExpect(status().isUnauthorized());
+
+        mockMvc.perform(put("/api/posts/{id}", postId)
+                        .header("Authorization", "Bearer " + otherToken)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(Map.of(
+                                "title", "他人修改", "content", "不允许", "tags", new String[]{"学习"}))))
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.message").value("只能操作自己的文章"));
+    }
+
+    @Test
+    void commentsCanBeDeletedByCommentAuthorOrPostAuthorOnly() throws Exception {
+        String authorToken = register("post-owner" + System.nanoTime(), "post-owner" + System.nanoTime() + "@example.com");
+        String commenterToken = register("commenter" + System.nanoTime(), "commenter" + System.nanoTime() + "@example.com");
+        String strangerToken = register("stranger" + System.nanoTime(), "stranger" + System.nanoTime() + "@example.com");
+        long postId = createPost(authorToken, "评论权限测试", "摘要", "# 正文\n评论测试。", "校园");
+
+        String response = mockMvc.perform(post("/api/posts/{id}/comments", postId)
+                        .header("Authorization", "Bearer " + commenterToken)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(Map.of("content", "这是一条评论"))))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.data.content").value("这是一条评论"))
+                .andReturn().getResponse().getContentAsString();
+        long commentId = objectMapper.readTree(response).at("/data/id").asLong();
+
+        mockMvc.perform(delete("/api/comments/{id}", commentId)
+                        .header("Authorization", "Bearer " + strangerToken))
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.message").value("只能删除自己的评论或自己文章下的评论"));
+
+        mockMvc.perform(delete("/api/comments/{id}", commentId)
+                        .header("Authorization", "Bearer " + authorToken))
+                .andExpect(status().isNoContent());
+
+        mockMvc.perform(get("/api/posts/{id}/comments", postId))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data.length()").value(0));
+    }
+
+    @Test
+    void validationRejectsLongTagAndTooManyPreferenceTags() throws Exception {
+        String token = register("validator" + System.nanoTime(), "validator" + System.nanoTime() + "@example.com");
+        mockMvc.perform(post("/api/posts")
+                        .header("Authorization", "Bearer " + token)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(Map.of(
+                                "title", "标签校验",
+                                "content", "正文",
+                                "tags", new String[]{"这个标签名字明显已经超过二十个字符长度限制"}))))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("每个标签不能超过20个字符"));
+
+        mockMvc.perform(put("/api/users/preferences")
+                        .header("Authorization", "Bearer " + token)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(Map.of(
+                                "tags", new String[]{"1","2","3","4","5","6","7","8","9","10","11"}))))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("最多只能选择10个兴趣标签"));
+    }
+
+    @Test
+    void nonAdminIsForbiddenAndAiQuotaReturns429() throws Exception {
+        String token = register("limited" + System.nanoTime(), "limited" + System.nanoTime() + "@example.com");
+        User user = userMapper.selectOne(new LambdaQueryWrapper<User>().eq(User::getUsername, objectMapper.readTree(
+                mockMvc.perform(get("/api/auth/me").header("Authorization", "Bearer " + token))
+                        .andExpect(status().isOk())
+                        .andReturn().getResponse().getContentAsString()).at("/data/username").asText()));
+
+        mockMvc.perform(get("/api/admin/users").header("Authorization", "Bearer " + token))
+                .andExpect(status().isForbidden());
+
+        IntStream.range(0, 50).forEach(index -> {
+            AiRequestLog log = new AiRequestLog();
+            log.setUserId(user.getId());
+            log.setFeature("WRITING");
+            log.setProvider("test");
+            log.setModel("test-model");
+            log.setStatus("SUCCESS");
+            log.setLatencyMs(1L);
+            log.setCreatedAt(LocalDateTime.now());
+            aiRequestLogMapper.insert(log);
+        });
+
+        mockMvc.perform(post("/api/ai/writing/stream")
+                        .header("Authorization", "Bearer " + token)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(Map.of(
+                                "action", "OUTLINE", "title", "限流测试", "context", "正文"))))
+                .andExpect(status().isTooManyRequests())
+                .andExpect(jsonPath("$.message").value("今日 AI 使用次数已达上限"));
     }
 
     private long createPost(String token, String title, String summary, String content, String tag) throws Exception {

@@ -1,5 +1,8 @@
 package com.campusblog;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.campusblog.auth.User;
+import com.campusblog.auth.UserMapper;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +23,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class AuthFlowTest {
     @Autowired MockMvc mockMvc;
     @Autowired ObjectMapper objectMapper;
+    @Autowired UserMapper userMapper;
 
     @Test
     void registerLoginAndProtectedEndpoint() throws Exception {
@@ -41,5 +45,46 @@ class AuthFlowTest {
     void protectedEndpointRejectsAnonymousUser() throws Exception {
         mockMvc.perform(get("/api/auth/me")).andExpect(status().isUnauthorized());
     }
-}
 
+    @Test
+    void duplicateRegisterAndInvalidLoginAreRejected() throws Exception {
+        String username = "dup" + System.nanoTime();
+        String email = username + "@example.com";
+        String register = objectMapper.writeValueAsString(Map.of(
+                "username", username, "email", email, "password", "Campus123!"));
+        mockMvc.perform(post("/api/auth/register")
+                        .contentType(MediaType.APPLICATION_JSON).content(register))
+                .andExpect(status().isCreated());
+
+        mockMvc.perform(post("/api/auth/register")
+                        .contentType(MediaType.APPLICATION_JSON).content(register))
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.message").value("用户名或邮箱已被使用"));
+
+        mockMvc.perform(post("/api/auth/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(Map.of("account", username, "password", "wrong-pass"))))
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("$.message").value("账号或密码错误"));
+    }
+
+    @Test
+    void disabledUserCannotLogin() throws Exception {
+        String username = "disabled" + System.nanoTime();
+        String email = username + "@example.com";
+        mockMvc.perform(post("/api/auth/register")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(Map.of(
+                                "username", username, "email", email, "password", "Campus123!"))))
+                .andExpect(status().isCreated());
+        User user = userMapper.selectOne(new LambdaQueryWrapper<User>().eq(User::getUsername, username));
+        user.setStatus("DISABLED");
+        userMapper.updateById(user);
+
+        mockMvc.perform(post("/api/auth/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(Map.of("account", username, "password", "Campus123!"))))
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.message").value("账号已被管理员停用"));
+    }
+}
